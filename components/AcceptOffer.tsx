@@ -22,7 +22,7 @@ import { GlobalContext } from 'context/GlobalState'
 import { useReservoirClient } from '@reservoir0x/reservoir-kit-ui'
 
 type Details = paths['/tokens/details/v4']['get']['responses']['200']['schema']
-type Collection = paths['/collection/v2']['get']['responses']['200']['schema']
+type Collection = paths['/collection/v3']['get']['responses']['200']['schema']
 
 type Props = {
   data:
@@ -59,7 +59,7 @@ const AcceptOffer: FC<Props> = ({
   const reservoirClient = useReservoirClient()
 
   useEffect(() => {
-    if (data) {
+    if (data && open && !details) {
       // Load data if missing
       if ('tokenId' in data) {
         getDetails(data.contract, data.tokenId, setDetails)
@@ -69,7 +69,7 @@ const AcceptOffer: FC<Props> = ({
         setDetails(data.details)
       }
     }
-  }, [data])
+  }, [data, open, details])
 
   let tokenId: string | undefined = undefined
   let contract: string | undefined = undefined

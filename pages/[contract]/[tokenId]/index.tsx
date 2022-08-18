@@ -7,14 +7,13 @@ import Head from 'next/head'
 import useDetails from 'hooks/useDetails'
 import useCollection from 'hooks/useCollection'
 import { paths } from '@reservoir0x/reservoir-kit-client'
-import useAsks from 'hooks/useAsks'
 import Listings from 'components/token/Listings'
 import TokenInfo from 'components/token/TokenInfo'
 import CollectionInfo from 'components/token/CollectionInfo'
 import Owner from 'components/token/Owner'
 import PriceData from 'components/token/PriceData'
 import TokenMedia from 'components/token/TokenMedia'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { TokenDetails } from 'types/reservoir'
 import { useTokenOpenseaBanned } from '@reservoir0x/reservoir-kit-ui'
 
@@ -34,7 +33,6 @@ const META_OG_IMAGE = process.env.NEXT_PUBLIC_META_OG_IMAGE
 const COLLECTION = process.env.NEXT_PUBLIC_COLLECTION
 const COMMUNITY = process.env.NEXT_PUBLIC_COMMUNITY
 const COLLECTION_SET_ID = process.env.NEXT_PUBLIC_COLLECTION_SET_ID
-const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 
 type Props = {
   collectionId: string
@@ -80,26 +78,8 @@ const Index: NextPage<Props> = ({ collectionId, tokenDetails }) => {
     tokens: [
       `${router.query?.contract?.toString()}:${router.query?.tokenId?.toString()}`,
     ],
+    includeTopBid: true,
   })
-
-  const asks = useAsks(
-    undefined,
-    details.data?.tokens?.[0]?.token?.kind,
-    `${details.data?.tokens?.[0]?.token?.contract}:${details.data?.tokens?.[0]?.token?.tokenId}`
-  )
-
-  const contract = router.query?.contract?.toString()
-  const tokenId = router.query?.tokenId?.toString()
-
-  const openSeaBaseUrl =
-    CHAIN_ID === '4'
-      ? 'https://testnets-api.opensea.io/'
-      : 'https://api.opensea.io/'
-
-  const urlOpenSea = new URL(
-    `/api/v1/asset/${contract}/${tokenId}`,
-    openSeaBaseUrl
-  )
 
   if (details.error) {
     return <div>There was an error</div>
@@ -148,7 +128,11 @@ const Index: NextPage<Props> = ({ collectionId, tokenDetails }) => {
           token={token?.token}
           collection={collection.data?.collection}
         />
-        <Listings asks={asks} />
+        {details.data?.tokens?.[0]?.token?.kind === 'erc1155' && (
+          <Listings
+            token={`${router.query?.contract?.toString()}:${router.query?.tokenId?.toString()}`}
+          />
+        )}
       </div>
       <div className="col-span-full block space-y-4 px-2 md:hidden lg:px-0">
         <CollectionInfo collection={collection} details={details} />

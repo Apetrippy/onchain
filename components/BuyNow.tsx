@@ -9,7 +9,7 @@ import { useSwitchNetwork } from 'wagmi'
 const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 
 type Details = paths['/tokens/details/v4']['get']['responses']['200']['schema']
-type Collection = paths['/collection/v2']['get']['responses']['200']['schema']
+type Collection = paths['/collection/v3']['get']['responses']['200']['schema']
 
 type Props = {
   data: {
@@ -22,6 +22,7 @@ type Props = {
   isInTheWrongNetwork: boolean | undefined
   signer: ReturnType<typeof useSigner>['data']
   buttonClassName?: string
+  mutate?: SWRResponse['mutate']
 }
 
 const BuyNow: FC<Props> = ({
@@ -29,6 +30,7 @@ const BuyNow: FC<Props> = ({
   isInTheWrongNetwork,
   signer,
   buttonClassName = 'btn-primary-fill w-full',
+  mutate,
 }) => {
   const { dispatch } = useContext(GlobalContext)
   const { switchNetworkAsync } = useSwitchNetwork({
@@ -83,9 +85,9 @@ const BuyNow: FC<Props> = ({
       trigger={trigger}
       tokenId={tokenId}
       collectionId={collectionId}
-      onComplete={() => {
-        if (data.details && data.details.mutate) {
-          data.details.mutate()
+      onClose={() => {
+        if (mutate) {
+          mutate()
         }
       }}
     />

@@ -31,6 +31,8 @@ const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 const DARK_MODE = process.env.NEXT_PUBLIC_DARK_MODE
 const DISABLE_POWERED_BY_RESERVOIR =
   process.env.NEXT_PUBLIC_DISABLE_POWERED_BY_RESERVOIR
+const API_BASE =
+  process.env.NEXT_PUBLIC_RESERVOIR_API_BASE || 'https://api.reservoir.tools'
 
 type Details = paths['/tokens/details/v4']['get']['responses']['200']['schema']
 
@@ -175,6 +177,9 @@ const Sweep: FC<Props> = ({ tokens, collection, mutate, setToast }) => {
         tokens: sweepTokens,
         signer,
         onProgress: setSteps,
+        options: {
+          partial: true,
+        },
       })
       .then(() => {
         setWaitingTx(false)
@@ -304,7 +309,7 @@ const Sweep: FC<Props> = ({ tokens, collection, mutate, setToast }) => {
                         <div className="relative" key={token.tokenId}>
                           <img
                             className="absolute top-1 right-1 h-4 w-4"
-                            src={`https://api.reservoir.tools/redirect/logo/v1?source=${token?.source}`}
+                            src={`${API_BASE}/redirect/sources/${token?.sourceDomain}/logo/v2`}
                             alt={`${token?.source} icon`}
                           />
                           <img
@@ -363,6 +368,7 @@ const Sweep: FC<Props> = ({ tokens, collection, mutate, setToast }) => {
                         >
                           Powered by{' '}
                           <img
+                            alt="Reservoir Watermark"
                             src={
                               !!DARK_MODE
                                 ? `/reservoir_watermark_dark.svg`
