@@ -5,6 +5,7 @@ type Props = {
   ogImage?: string
   title?: string
   description?: string
+  favicon?: string
 }
 
 /**
@@ -12,11 +13,13 @@ type Props = {
  * @param ogImage - The URL of the Open Graph image to be displayed in social media shares.
  * @param title - The title of the page.
  * @param description - The description of the page.
+ * @param favicon The URL of the Favicon image to be displayed in the website.
  */
 export const Head: FC<Props> = ({
-  ogImage = 'https://raw.githubusercontent.com/Apetrippy/onchain/main/OnChain.tk.png',
+  ogImage = 'https://raw.githubusercontent.com/DonnGregoor69/onchain/main/public/og-image.png',
   title = 'OnChain NFT Marketplace',
   description = 'OnChain.Tk is a NFT marketplace for digital collectibles and art. Buy, sell and trade rare digital assets on the blockchain!',
+  favicon = 'https://raw.githubusercontent.com/DonnGregoor69/onchain/main/public/favicon.ico',
 }) => {
   return (
     <NextHead>
